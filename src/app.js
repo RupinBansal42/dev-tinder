@@ -2,15 +2,13 @@ const express = require("express");
 
 const app = express();
 
-app.use("/test", (req, res) => {
-  res.send("Hello from server");
+app.get("/user/:userID/:name", (req, res) => {
+  console.log("Params", req.params);
+  res.send("User Details Recieved");
 });
 
-app.use("/profile", (req, res) => {
-  res.send("Hello from profile side");
-});
-app.use("/", (req, res) => {
-  res.send("Hello from dashboard");
+app.post("/user", (req, res) => {
+  res.send("Saved User Details successfully");
 });
 
 app.listen(3000, () => {
