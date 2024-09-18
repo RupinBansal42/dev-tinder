@@ -1,0 +1,24 @@
+{
+  "name": "tender-dev",
+  "version": "1.0.0",
+  "description": "Tender for developers",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node src/app.js",
+    "start" : "nodemon src/app.js"
+  },
+  "keywords": [
+    "NodeJS",
+    "+",
+    "JS",
+    "+",
+    "Backend"
+  ],
+  "author": "Rupin Bansal",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.0",
+    "mongoose": "^8.6.3"
+  }
+}
