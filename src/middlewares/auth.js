@@ -8,10 +8,11 @@ const adminAuth = (req, res, next) => {
   }
 };
 
-const userAuth = (req, res) => {
+const userAuth = (req, res,next) => {
   const token = "abz";
   const isTokenAuthorized = token === "abz";
   if (!isTokenAuthorized) {
+    console.log("Not authorized for the call")
     res.status(404).send("Not authorized for the calls");
   } else {
     next();
