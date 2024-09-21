@@ -9,9 +9,13 @@ app.use(express.json());
 app.post("/signup", async (req, res) => {
   console.log("signup", req.body);
   // const {firstName, lastName,age, gender, emailID, password} = req.body
+  try {
   const user = new User(req.body);
   await user.save();
   res.send("Data Saved Successfully");
+  } catch(err) {
+    res.status(400).send(err)
+  }
 });
 
 //Fetch API calls for user
@@ -38,6 +42,29 @@ app.get("/feed", async (req, res) => {
     } else {
       res.send(user);
     }
+  } catch (err) {
+    res.status(400).send("Data not found");
+  }
+});
+
+app.delete("/user/", async (req, res) => {
+  const userId = req.body.userId;
+  try {
+    const user = await User.deleteOne({ _id: userId });
+    res.send("Delete user Successfully");
+  } catch (err) {
+    res.status(400).send("Data not found");
+  }
+});
+
+app.patch("/user/", async (req, res) => {
+  const userId = req.body.userId;
+  const data = req.body;
+  try {
+    const user = await User.findByIdAndUpdate({ _id: userId }, data, {
+      returnDocument: "before",
+    });
+    res.send("Updated user Successfully");
   } catch (err) {
     res.status(400).send("Data not found");
   }
