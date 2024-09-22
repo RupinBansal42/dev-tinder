@@ -10,11 +10,11 @@ app.post("/signup", async (req, res) => {
   console.log("signup", req.body);
   // const {firstName, lastName,age, gender, emailID, password} = req.body
   try {
-  const user = new User(req.body);
-  await user.save();
-  res.send("Data Saved Successfully");
-  } catch(err) {
-    res.status(400).send(err)
+    const user = new User(req.body);
+    await user.save();
+    res.send("Data Saved Successfully");
+  } catch (err) {
+    res.status(400).send(err);
   }
 });
 
@@ -57,16 +57,36 @@ app.delete("/user/", async (req, res) => {
   }
 });
 
-app.patch("/user/", async (req, res) => {
-  const userId = req.body.userId;
+app.patch("/user/:userId", async (req, res) => {
+  const userId = req.params?.userId;
   const data = req.body;
+
   try {
+    // const ALLOWED_UPDATES = [
+    //   "userId",
+    //   "photoURL",
+    //   "gender",
+    //   "about",
+    //   "age",
+    //   "skills",
+    // ];
+
+    // const isUpdatedAllowed = Object.keys(data).every((key) =>
+    //   ALLOWED_UPDATES.includes(key)
+    // );
+    // console.log("isUpdatedAllowed",isUpdatedAllowed)
+    // if (!isUpdatedAllowed) {
+    //   throw new Error("Update Not Allowed");
+    // }
+    if (data.skills.length > 5) {
+      throw new Error ("Skills Length cannot be more than 5")
+    }
     const user = await User.findByIdAndUpdate({ _id: userId }, data, {
       returnDocument: "before",
     });
     res.send("Updated user Successfully");
   } catch (err) {
-    res.status(400).send("Data not found");
+    res.status(400).send(err.message);
   }
 });
 
