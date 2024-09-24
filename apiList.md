@@ -6,8 +6,8 @@ authRouter
 
 profileRouter
 - PATCH /profile/edit [age, gender, skills [not emailID]]
-- GET /profile
-- PATCH /profile/password
+- GET /profile/view
+- PATCH /profile/password //Forget password
 
 
 connectionRequestRouter

@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 var validator = require("validator");
 const jwt = require("jsonwebtoken");
 
-
 const userSchema = new mongoose.Schema(
   {
     firstName: {
@@ -55,8 +54,14 @@ const userSchema = new mongoose.Schema(
         }
       },
     },
-    about: { type: String, default: "This is a default about of user" },
-    skills: { type: [String], maxLength: 5 },
+    about: {
+      type: String,
+      default: "This is a default about of user",
+    },
+    skills: {
+      type: [String],
+      maxLength: 5,
+    },
   },
   { timestamps: true }
 );
