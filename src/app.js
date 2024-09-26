@@ -2,7 +2,12 @@ const express = require("express");
 const { connectDB } = require("./config/database");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
+const cors = require("cors")
 const app = express();
+app.use(cors( {
+  origin : "http://localhost:5173",
+  credentials : true
+}))
 
 app.use(express.json());
 app.use(cookieParser());
@@ -20,8 +25,8 @@ app.use("/", connectionRequestRouter);
 connectDB()
   .then(() => {
     console.log("DB connected successfully");
-    app.listen(3000, () => {
-      console.log("Server is listening on port 3000");
+    app.listen(7777, () => {
+      console.log("Server is listening on port 7777");
     });
   })
   .catch((err) => {

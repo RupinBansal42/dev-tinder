@@ -19,12 +19,6 @@ connectionRequestRouter.post(
       if (!allowedStatus.includes(status)) {
         return res.status(400).json({ message: "Bad Request" });
       }
-
-      // const toUser = await User.findById(toUserId);
-      // if (!toUser) {
-      //   return res.status(404).json({ message: "User not avialable in App" });
-      // }
-      //Check if connection exists
       const existingConnectionrequest = await connectionRequestModel.findOne({
         $or: [
           { fromUserId, toUserId },
@@ -48,6 +42,38 @@ connectionRequestRouter.post(
         message: `send connection request....`,
         data: connectionRequestData,
       });
+    } catch (err) {
+      res.status(400).send("ERROR in connection request" + err);
+    }
+  }
+);
+
+connectionRequestRouter.post(
+  "/request/review/:status/:requestId",
+  userAuth,
+  async (req, res) => {
+    try {
+      const { status, requestId } = req.params;
+      const loggedInUser = req.user;
+      const allowedStatus = ["accepted", "rejected"];
+      console.log("loggedInUser",loggedInUser)
+      if (!allowedStatus.includes(status)) {
+        return res.status(400).send({ message: "Status not allowed" });
+      }
+      console.log(requestId, loggedInUser._id, status)
+      const connectionRequest = await connectionRequestModel.findOne({
+        _id: requestId,
+        toUserId: loggedInUser._id,
+        status: "interested",
+      });
+      if (!connectionRequest) {
+        return res
+          .status(404)
+          .json({ message: "Connection Request not found" });
+      }
+      connectionRequest.status = status;
+      const data = await connectionRequest.save();
+      res.json({ message: "Connection Request" + status, data });
     } catch (err) {
       res.status(400).send("ERROR in connection request" + err);
     }

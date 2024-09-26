@@ -1,20 +1,50 @@
 const express = require("express");
+const { userAuth } = require("../middlewares/auth");
 const User = require("../models/users");
+const { connectionRequestModel } = require("../models/connectionRequest");
 
 const userRouter = express.Router();
 
-//Fetch API calls for user
-userRouter.get("/user", async (req, res) => {
-  const lastName = req.body.lastName;
+//Fetch API calls for pending connection req for loggedIn user
+userRouter.get("/user/requests/received", userAuth, async (req, res) => {
   try {
-    const user = await User.findOne({ lastName: lastName });
+    const loggedInUser = req.user;
+    const user = await connectionRequestModel
+      .find({
+        toUserId: loggedInUser._id,
+        status: "interested",
+      })
+      .populate("fromUserId", ["firstName", "lastName"]);
     if (user.length === 0) {
-      res.status(400).send("User not Found");
+      res.status(400).send("No connections found.");
     } else {
       res.send(user);
     }
   } catch (err) {
-    res.status(400).send("Data not found");
+    res.status(400).send("ERR:", err);
+  }
+});
+
+//Fetch API calls for connection req for user
+userRouter.get("/user/connections", userAuth, async (req, res) => {
+  try {
+    const loggedInUser = req.user;
+    const user = await connectionRequestModel
+      .find({
+        $or: [
+          { toUserId: loggedInUser._id, status: "accepted" },
+          { fromUserId: loggedInUser._id, status: "accepted" },
+        ],
+      })
+      .populate("fromUserId", ["firstName", "lastName"]);
+      const data = user.map((row) => row.fromUserId)
+    if (user.length === 0) {
+      res.status(400).send("No connections found.");
+    } else {
+      res.send(data);
+    }
+  } catch (err) {
+    res.status(400).send("ERR:", err);
   }
 });
 
