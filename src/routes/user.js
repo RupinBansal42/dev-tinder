@@ -36,8 +36,14 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
           { fromUserId: loggedInUser._id, status: "accepted" },
         ],
       })
-      .populate("fromUserId", ["firstName", "lastName"]);
-      const data = user.map((row) => row.fromUserId)
+      .populate("fromUserId", ["firstName", "lastName"])
+      .populate("toUserId", ["firstNme", "lastName"]);
+    const data = user.map((row) => {
+      if (row.fromUserId._id.toString() === loggedInUser._id.toString()) {
+        return row.toUserId;
+      }
+      return row.fromUserId;
+    });
     if (user.length === 0) {
       res.status(400).send("No connections found.");
     } else {
