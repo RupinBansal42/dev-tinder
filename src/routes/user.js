@@ -14,7 +14,13 @@ userRouter.get("/user/requests/received", userAuth, async (req, res) => {
         toUserId: loggedInUser._id,
         status: "interested",
       })
-      .populate("fromUserId", ["firstName", "lastName"]);
+      .populate("fromUserId", [
+        "firstName",
+        "lastName",
+        "photoURL",
+        "about",
+        "skills",
+      ]);
     if (user.length === 0) {
       res.json({ message: "No connections found." });
     } else {
@@ -61,7 +67,6 @@ userRouter.get("/user/feed", userAuth, async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
-    console.log("sjfdfds", skip, limit, page);
     // find all connection [sent + recieved]
     const connectionRequest = await connectionRequestModel
       .find({
